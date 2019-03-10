@@ -9,6 +9,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Trello\Client;
 use Trello\Exception\ErrorException;
@@ -166,12 +167,15 @@ class HttpClient implements HttpClientInterface
 
         $requestOptions = array_merge($this->options, $options);
         $requestOptions['headers'] = array_merge($requestOptions['headers'],$this->headers, $headers);
-        $requestOptions['body'] = $body;
+        $requestOptions['body'] = !empty($body) ? json_encode($body) : null;
+
+
+
 
         try {
             $response = $this->client->request($httpMethod, $path, $requestOptions);
         } catch (\LogicException $e) {
-            throw new ErrorException($e->getMessage(), $e->getCode(), $e);
+            throw new ErrorException($e->getMessage(), $e->getCode(), 1, __FILE__, __LINE__, $e);
         } catch (\RuntimeException $e) {
             throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
         }
@@ -189,7 +193,7 @@ class HttpClient implements HttpClientInterface
     {
         $this->handlerStack->push(Middleware::mapRequest(function (RequestInterface $r) use ($tokenOrLogin, $password, $method) {
             // Skip by default
-            if (null === $this->method) {
+            if (null === $method) {
                 return;
             }
 
@@ -212,14 +216,14 @@ class HttpClient implements HttpClientInterface
                     $url = $r->getUri();
 
                     $parameters = array(
-                        'key'   => $this->tokenOrLogin,
-                        'token' => $this->password,
+                        'key'   => $tokenOrLogin,
+                        'token' => $password,
                     );
 
                     $url .= (false === strpos($url, '?') ? '?' : '&');
                     $url .= utf8_encode(http_build_query($parameters, '', '&'));
 
-                    return $r->withUri($url);
+                    return $r->withUri(new Uri($url));
 
                     break;
 
