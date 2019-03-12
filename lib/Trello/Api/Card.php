@@ -46,6 +46,7 @@ class Card extends AbstractApi
         'idMembersVoted',
         'idShort',
         'idAttachmentCover',
+        'idLabels',
         'manualCoverAttachment',
         'labels',
         'name',

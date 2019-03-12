@@ -113,6 +113,10 @@ class Client implements ClientInterface
             case 'checklists':
                 $api = new Api\Checklist($this);
                 break;
+            case 'label':
+            case 'labels':
+                $api = new Api\Label($this);
+                break;
             case 'list':
             case 'lists':
                 $api = new Api\Cardlist($this);
