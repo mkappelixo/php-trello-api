@@ -47,7 +47,7 @@ class Label extends AbstractApi
 
     public function create(array $params = [])
     {
-        $this->validateRequiredParameters(array('id', 'idBoard', 'color'), $params);
+        $this->validateRequiredParameters(array('name', 'idBoard', 'color'), $params);
         $this->validateAllowedColors($params['color']);
 
         return $this->post($this->getPath(), $params);
@@ -66,17 +66,17 @@ class Label extends AbstractApi
     protected function validateAllowedColors($color)
     {
         switch ($color) {
-            case COLOR_YELLOW:
-            case COLOR_PURPLE:
-            case COLOR_BLUE:
-            case COLOR_RED:
-            case COLOR_GREEN:
-            case COLOR_ORANGE:
-            case COLOR_BLACK:
-            case COLOR_SKY:
-            case COLOR_PINK:
-            case COLOR_LIME:
-            case COLOR_NULL:
+            case self::COLOR_YELLOW:
+            case self::COLOR_PURPLE:
+            case self::COLOR_BLUE:
+            case self::COLOR_RED:
+            case self::COLOR_GREEN:
+            case self::COLOR_ORANGE:
+            case self::COLOR_BLACK:
+            case self::COLOR_SKY:
+            case self::COLOR_PINK:
+            case self::COLOR_LIME:
+            case self::COLOR_NULL:
                 break;
             default:
                 throw new ValidationFailedException('Color provided was not a valid color');
