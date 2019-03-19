@@ -8,15 +8,20 @@ class ResponseMediator
 {
     public static function getContent(Response $response)
     {
-        $body    = $response->getBody(true);
+        if ($response->getStatusCode() >= 200 && $response->getStatusCode() <= 399)
+        {
+            $body    = $response->getBody(true);
 
-        $content = json_decode($body, true);
+            $content = json_decode($body, true);
 
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            return $body;
+            if (JSON_ERROR_NONE !== json_last_error()) {
+                return $body;
+            }
+
+            return $content;
         }
 
-        return $content;
+        throw new \Exception('Error from Trello API:' . $response->getStatusCode() . ' ' . $response->getReasonPhrase() . ' ' . $response->getBody());
     }
 
     /*

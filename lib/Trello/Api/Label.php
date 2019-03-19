@@ -55,7 +55,7 @@ class Label extends AbstractApi
 
     public function update($id, array $params = [])
     {
-        if ($params['color'])
+        if (isset($params['color']))
         {
             $this->validateAllowedColors($params['color']);
         }

@@ -157,10 +157,11 @@ class HttpClient implements HttpClientInterface
      */
     public function request($path, $body = null, $httpMethod = 'GET', array $headers = array(), array $options = array())
     {
-
         $path = $this->options['api_version'].'/'.$path;
 
-        if ($httpMethod === 'GET' && $body) {
+        // As per the Trello api, it seems all parameters are either part of the URL path or
+        // query string parameters.
+        if ($body) {
             $path .= (false === strpos($path, '?') ? '?' : '&');
             $path .= utf8_encode(http_build_query($body, '', '&'));
         }
@@ -168,9 +169,6 @@ class HttpClient implements HttpClientInterface
         $requestOptions = array_merge($this->options, $options);
         $requestOptions['headers'] = array_merge($requestOptions['headers'],$this->headers, $headers);
         $requestOptions['body'] = !empty($body) ? json_encode($body) : null;
-
-
-
 
         try {
             $response = $this->client->request($httpMethod, $path, $requestOptions);
