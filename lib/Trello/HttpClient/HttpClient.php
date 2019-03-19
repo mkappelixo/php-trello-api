@@ -189,6 +189,8 @@ class HttpClient implements HttpClientInterface
      */
     public function authenticate($tokenOrLogin, $password = null, $method)
     {
+        $this->handlerStack->remove('auth');
+
         $this->handlerStack->push(Middleware::mapRequest(function (RequestInterface $r) use ($tokenOrLogin, $password, $method) {
             // Skip by default
             if (null === $method) {
