@@ -161,7 +161,7 @@ class HttpClient implements HttpClientInterface
 
         // As per the Trello api, it seems all parameters are either part of the URL path or
         // query string parameters.
-        if ($body) {
+        if ($body && $headers['Content-type'] !== 'application/json') {
             $path .= (false === strpos($path, '?') ? '?' : '&');
             $path .= utf8_encode(http_build_query($body, '', '&'));
         }

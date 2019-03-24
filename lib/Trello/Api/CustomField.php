@@ -34,7 +34,7 @@ class CustomField extends AbstractApi
     {
         $this->validateRequiredParameters(array('name', 'idModel', 'modelType', 'name', 'type', 'pos'), $params);
 
-        return $this->post($this->getPath(), $params);
+        return $this->post($this->getPath(), $params, ['Content-type' => 'application/json']);
     }
 
     public function update($id, array $params = [])
