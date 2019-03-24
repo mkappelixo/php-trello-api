@@ -141,6 +141,12 @@ class Client implements ClientInterface
             case 'webhooks':
                 $api = new Api\Webhook($this);
                 break;
+            case 'customfield':
+            case 'customField':
+            case 'customfields':
+            case 'customFields':
+                $api = new Api\CustomField($this);
+                break;
             default:
                 throw new InvalidArgumentException(sprintf('Undefined api called: "%s"', $name));
         }
