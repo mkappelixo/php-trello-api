@@ -34,7 +34,7 @@ class BoardPlugins extends AbstractApi
 
     public function create($id, $params)
     {
-        $this->validateRequiredParameters('idPlugin');
+        $this->validateRequiredParameters(['idPlugin'], $params);
         $this->post($this->getPath($id), $params);
     }
 }
