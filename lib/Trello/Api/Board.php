@@ -336,4 +336,9 @@ class Board extends AbstractApi
     {
         return new Board\PowerUps($this->client);
     }
+
+    public function boardPlugins()
+    {
+        return new Board\BoardPlugins($this->client);
+    }
 }
