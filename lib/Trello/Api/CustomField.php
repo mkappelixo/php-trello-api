@@ -41,4 +41,9 @@ class CustomField extends AbstractApi
     {
         return $this->put($this->getPath() . '/' . rawurlencode($id), $params);
     }
+
+    public function options()
+    {
+        return new CustomField\Option($this->client);
+    }
 }

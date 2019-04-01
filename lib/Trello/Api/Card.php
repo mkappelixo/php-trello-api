@@ -343,4 +343,9 @@ class Card extends AbstractApi
     {
         return new Card\Stickers($this->client);
     }
+
+    public function customFields()
+    {
+        return new Card\CustomField($this->client);
+    }
 }

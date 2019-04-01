@@ -166,13 +166,29 @@ abstract class AbstractApi implements ApiInterface
      */
     protected function postRaw($path, $body, $requestHeaders = array())
     {
-        $response = $this->client->getHttpClient()->post(
-            $path,
-            $body,
-            $requestHeaders
-        );
+        $errorCount = 0;
 
-        return ResponseMediator::getContent($response);
+        while (true)
+        {
+            $response = $this->client->getHttpClient()->post(
+                $path,
+                $body,
+                $requestHeaders
+            );
+            try {
+                $responseContent = ResponseMediator::getContent($response);
+                break;
+            } catch (\Exception $e) {
+                $errorCount++;
+                if ($errorCount >= 3)
+                {
+                    throw new \Trello\Exception\ErrorException('Response error: ' . $e->getMessage() . "\nRequest Path: " . $path . ' Request Body: ' . print_r($body, true));
+                }
+                sleep(3);
+            }
+        }
+
+        return $responseContent;
     }
 
     /**
@@ -218,7 +234,12 @@ abstract class AbstractApi implements ApiInterface
             $requestHeaders
         );
 
-        return ResponseMediator::getContent($response);
+        try {
+            $responseContent = ResponseMediator::getContent($response);
+        } catch (\Exception $e) {
+            throw new \Exception('Response error: ' . $e->getMessage() . "\nRequest Path: " . $path . ' Request Parameters: ' . print_r($this->createParametersBody($parameters),true));
+        }
+        return $responseContent;
     }
 
     /**
