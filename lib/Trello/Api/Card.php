@@ -107,6 +107,11 @@ class Card extends AbstractApi
         return $this->put($this->getPath().'/'.rawurlencode($id), $params);
     }
 
+    public function remove($id)
+    {
+        $this->delete($this->getPath().'/'.rawurlencode($id));
+    }
+
     /**
      * Set a given card's board
      * @link https://trello.com/docs/api/card/#put-1-cards-card-id-or-shortlink-idboard
