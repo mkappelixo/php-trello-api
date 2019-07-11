@@ -6,10 +6,27 @@ use Trello\Api\AbstractApi;
 
 class CustomField extends AbstractApi
 {
-    protected $path = 'cards/#id#/customField';
+    protected $path = 'card/#id#/customField';
 
-    public function set($id, $customFieldId, $params = array())
+    /**
+     * @param $cardId
+     * @param $customFieldId
+     * @param array $params
+     * @return mixed
+     * @throws \Exception
+     */
+    public function set($cardId, $customFieldId, $params = array())
     {
-        return $this->put($this->getPath($id) . '/' . rawurlencode($customFieldId) . '/item', $params, ['Content-type' => 'application/json']);
+        return $this->put($this->getPath($cardId) . '/' . rawurlencode($customFieldId) . '/item', $params, ['Content-type' => 'application/json'], true);
+    }
+
+    /**
+     * @param $cardId
+     * @param $customFieldId
+     * @return mixed
+     * @throws \Exception
+     */
+    public function setChecked($cardId, $customFieldId){
+        return $this->put($this->getPath($cardId) . '/' . rawurlencode($customFieldId) . '/item', ['value' => ["checked" => "true"]], ['Content-type' => 'application/json'], true);
     }
 }

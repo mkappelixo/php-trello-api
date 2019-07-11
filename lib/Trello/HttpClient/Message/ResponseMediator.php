@@ -21,7 +21,7 @@ class ResponseMediator
             return $content;
         }
 
-        throw new \Exception('Error from Trello API:' . $response->getStatusCode() . ' ' . $response->getReasonPhrase() . ' ' . $response->getBody());
+        throw new \Trello\Exception\ErrorException('Error from Trello API:' . $response->getStatusCode() . ' ' . $response->getReasonPhrase() . ' ' . $response->getBody());
     }
 
     /*

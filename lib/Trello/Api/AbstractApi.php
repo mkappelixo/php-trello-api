@@ -166,26 +166,16 @@ abstract class AbstractApi implements ApiInterface
      */
     protected function postRaw($path, $body, $requestHeaders = array())
     {
-        $errorCount = 0;
+        $response = $this->client->getHttpClient()->post(
+            $path,
+            $body,
+            $requestHeaders
+        );
 
-        while (true)
-        {
-            $response = $this->client->getHttpClient()->post(
-                $path,
-                $body,
-                $requestHeaders
-            );
-            try {
-                $responseContent = ResponseMediator::getContent($response);
-                break;
-            } catch (\Exception $e) {
-                $errorCount++;
-                if ($errorCount >= 3)
-                {
-                    throw new \Trello\Exception\ErrorException('Response error: ' . $e->getMessage() . "\nRequest Path: " . $path . ' Request Body: ' . print_r($body, true));
-                }
-                sleep(3);
-            }
+        try {
+            $responseContent = ResponseMediator::getContent($response);
+        } catch (\Exception $e) {
+            throw new \Trello\Exception\ErrorException('Response error: ' . $e->getMessage() . "\nRequest Path: " . $path . ' Request Body: ' . print_r($body, true));
         }
 
         return $responseContent;
@@ -220,7 +210,7 @@ abstract class AbstractApi implements ApiInterface
      *
      * @return mixed
      */
-    protected function put($path, array $parameters = array(), $requestHeaders = array())
+    protected function put($path, array $parameters = array(), $requestHeaders = array(), $asArray = false)
     {
         foreach ($parameters as $name => $parameter) {
             if (is_bool($parameter)) {
@@ -230,7 +220,7 @@ abstract class AbstractApi implements ApiInterface
 
         $response = $this->client->getHttpClient()->put(
             $path,
-            $this->createParametersBody($parameters),
+            $this->createParametersBody($parameters, $asArray),
             $requestHeaders
         );
 
@@ -269,21 +259,23 @@ abstract class AbstractApi implements ApiInterface
      *
      * @return null|string
      */
-    protected function createParametersBody(array $parameters)
+    protected function createParametersBody(array $parameters, $asArray = false)
     {
-        foreach ($parameters as $name => $parameter) {
-            if (is_bool($parameter)) {
-                $parameters[$name] = $parameter ? 'true' : 'false';
-            } elseif (is_array($parameter)) {
-                foreach ($parameter as $subName => $subParameter) {
-                    if (is_bool($subParameter)) {
-                        $subParameter = $subParameter ? 'true' : 'false';
+        if(!$asArray) {
+            foreach ($parameters as $name => $parameter) {
+                if (is_bool($parameter)) {
+                    $parameters[$name] = $parameter ? 'true' : 'false';
+                } elseif (is_array($parameter)) {
+                    foreach ($parameter as $subName => $subParameter) {
+                        if (is_bool($subParameter)) {
+                            $subParameter = $subParameter ? 'true' : 'false';
+                        }
+                        $parameters[$name . '/' . $subName] = $subParameter;
                     }
-                    $parameters[$name.'/'.$subName] = $subParameter;
+                    unset($parameters[$name]);
+                } elseif ($parameter instanceof DateTime) {
+                    $parameters[$name] = $parameter->format($parameter::ATOM);
                 }
-                unset($parameters[$name]);
-            } elseif ($parameter instanceof DateTime) {
-                $parameters[$name] = $parameter->format($parameter::ATOM);
             }
         }
 
