@@ -29,4 +29,14 @@ class CustomField extends AbstractApi
     public function setChecked($cardId, $customFieldId){
         return $this->put($this->getPath($cardId) . '/' . rawurlencode($customFieldId) . '/item', ['value' => ["checked" => "true"]], ['Content-type' => 'application/json'], true);
     }
+
+    /**
+     * @param $cardId
+     * @param $customFieldId
+     * @return mixed
+     * @throws \Exception
+     */
+    public function setText($cardId, $customFieldId, $text){
+        return $this->put($this->getPath($cardId) . '/' . rawurlencode($customFieldId) . '/item', ['value' => ['text' => $text]], ['Content-type' => 'application/json'], true);
+    }
 }
