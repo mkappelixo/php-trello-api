@@ -337,8 +337,19 @@ class Board extends AbstractApi
         return new Board\PowerUps($this->client);
     }
 
+    /**
+     * @return Board\BoardPlugins
+     */
     public function boardPlugins()
     {
         return new Board\BoardPlugins($this->client);
+    }
+
+    /**
+     * @return Board\CustomFields
+     */
+    public function customFields()
+    {
+        return new Board\CustomFields($this->client);
     }
 }

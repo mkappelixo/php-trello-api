@@ -19,8 +19,6 @@ class Labels extends AbstractApi
      */
     protected $path = 'boards/#id#/labels';
 
-    protected $fields = [];
-    
     /**
      * Get labels related to a given board
      * @link https://developers.trello.com/v1.0/reference#boardsboardidlabels
